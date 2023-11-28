@@ -22,6 +22,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int getppid(void); // Agregado
+int getancestors(int); // Agregado
 
 // ulib.c
 int stat(const char*, struct stat*);
