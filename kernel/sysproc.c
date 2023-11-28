@@ -21,6 +21,55 @@ sys_getpid(void)
   return myproc()->pid;
 }
 
+// Nueva función
+uint64
+sys_getppid(void)
+{
+  return myproc()->parent->pid;
+}
+
+
+// Nueva función
+uint64
+sys_getancestor(int level) {
+  typedef struct {
+      int pid;  // Identificador del proceso
+      int ppid; // Identificador del padre
+  } Process;
+
+
+  #define MAX_PROCESSES 100
+  Process processTable[MAX_PROCESSES];
+  int processCount = 0;
+
+  int currentPid = getpid();
+  int i;
+
+  for (i = 0; i < processCount; i++) {
+      if (processTable[i].pid == currentPid) {
+          int ancestorPid = processTable[i].pid;
+
+          // Recorrer los niveles hacia arriba
+          while (level > 0 && ancestorPid != 0) {
+              for (i = 0; i < processCount; i++) {
+                  if (processTable[i].pid == ancestorPid) {
+                      ancestorPid = processTable[i].ppid;
+                      level--;
+                      break;
+                  }
+              }
+          }
+
+          return ancestorPid;
+      }
+  }
+
+  // Si no se encuentra el proceso actual, devolver un valor especial (por ejemplo, -1)
+  return -1;
+}
+
+
+
 uint64
 sys_fork(void)
 {
